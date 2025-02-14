@@ -1,0 +1,1 @@
+DELETE http://localhost:4000/api/tickets/41c2da3e-6ec9-4faa-8501-ff54d56d05e3 HTTP/1.1

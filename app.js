@@ -3,6 +3,7 @@ import morgan from 'morgan';
 import express from 'express';
 import mongoose from 'mongoose';
 import usersRoutes from './routes/usersRoutes.js';
+import ticketsRoutes from './routes/ticketsRoutes.js';
 
 mongoose.set('debug', true); // Habilitar depuración
 
@@ -21,6 +22,7 @@ app.get("/api", (req, res) => {
     res.send("<h1>Ticketing API Rest</h1>");
 })
 
-app.use("/api/users", usersRoutes);
+app.use("/api/users", usersRoutes); //Rutas de usuarios
+app.use("/api/tickets", ticketsRoutes); //Rutas de tickets
 
 export default app;
