@@ -1,26 +1,46 @@
 import express from 'express';
 import Ticket from '../models/Ticket.js';
+import auth from '../middleware/auth.js';
+import admin from '../middleware/admin.js';
+import buildFilter from '../middleware/filter.js';
+import paginate from '../middleware/pagination.js';
 
 const router = express.Router();
 
-// GET api/tickets/
-router.get("/", async (req, res) => {
-    try {
-        const tickets = await Ticket.find();
-        if (!tickets) {
-            res.status(400).json({ message: "Server Error: "+ req.errored.message })
-        } else if(tickets.length == 0) {res.status(200).json({ tickets: []})}//Enviar un array vacío
-        return res.status(200).json({ tickets: tickets }); //Enviar los tickets
+// Get all tickets
+// Public
+// GET /api/tickets/
 
-    } catch (error) {
-        res.status(500).json({ message: "Server Error "+error.message})
+// Get ticket by ID
+// GET api/tickets/id
+router.get("/:id", async (req, res) => {
+    try {
+        const ticket = await Ticket.findOne({ id: req.params.id });
+        if (!ticket) return res.status(404).json({ message: "Ticket not found."});
+
+        res.status(200).json({ ticket: ticket})
+    } catch (err) {
+        res.status(500).json({ message: "Server Error: "+err.message});
     }
 })
 
-//POST api/tickets/
-router.post("/", async (req, res) => {
+// Filter tickets
+// GET api/tickets?page=1&pageSize=10
+// GET /api/tickets?status=open&priority=high
+// GET /api/tickets?search=bug
+
+router.get("/", buildFilter, paginate(Ticket), async (req, res) => {
+    res.status(200).json(req.paginatedResults);
+})
+
+
+// Create a ticket
+// Private (only logged in users can create tickets)
+// POST api/tickets/
+// Ticket Schema; user, title, description, priority, status
+router.post("/", auth, async (req, res) => {
     const newTicket = new Ticket({
-        user: req.body.user,
+        user: req.user._id,
         title: req.body.title,
         description: req.body.description,
         status: req.body.status,
@@ -35,20 +55,11 @@ router.post("/", async (req, res) => {
     }
 })
 
-//GET api/tickets/id
-router.get("/:id", async (req, res) => {
-    try {
-        const ticket = await Ticket.findOne({ id: req.params.id });
-        if (!ticket) return res.status(404).json({ message: "Ticket not found."});
-
-        res.status(200).json({ ticket: ticket})
-    } catch (err) {
-        res.status(500).json({ message: "Server Error: "+err.message});
-    }
-})
-
-//PUT api/tickets/:id
-router.put("/:id", async (req, res) => {
+// Update a ticket by ID
+// Private (only logged in users can create tickets)
+// PUT api/tickets/id
+// Ticket Schema; user, title, description, priority, status
+router.put("/:id", auth, async (req, res) => {
     const update = req.body;
 
     try {
@@ -62,8 +73,10 @@ router.put("/:id", async (req, res) => {
     }
 })
 
+// Delete a ticket by ID
+// Private (only admin users can delete tickets)
 //DELETE api/tickets/:id
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", [auth, admin], async (req, res) => {
     try {
         const ticket = await Ticket.findOneAndDelete({ id: req.params.id });
         if (!ticket) { return res.status(404).json({ message: "Ticket not found."})};

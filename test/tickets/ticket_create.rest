@@ -1,8 +1,9 @@
+//Crear ticket con usuario autenticado
 POST http://localhost:4000/api/tickets/ HTTP/1.1
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2IzOGUzYzFmMWU5NjYzNWUyOTgzYjMiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3Mzk4MzgwMTQsImV4cCI6MTczOTg0MTYxNH0.vfh-he2z6FJJe0dxYAY2y0SEWVjUMM0A5RzJ3ZnjQuQ
 
 {
-    "user": "53f6daab-fa21-4a16-a732-593d0dafa156",
-    "title": "Test title 3",
-    "description": "Test description 3"
+    "title": "Ticket #15",
+    "description": "Example description."
 }

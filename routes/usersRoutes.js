@@ -62,7 +62,7 @@ router.post('/login', async (req, res) => {
         }
     );
 
-    res.header("Authorization", token).send(token);
+    res.header("Authorization", token).json({token: token});
 });
 
 export default router; //Exportar el router
