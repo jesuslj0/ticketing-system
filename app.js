@@ -4,6 +4,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import usersRoutes from './routes/usersRoutes.js';
 import ticketsRoutes from './routes/ticketsRoutes.js';
+import error from './middleware/error.js';
 
 mongoose.set('debug', true); // Habilitar depuración
 
@@ -25,4 +26,5 @@ app.get("/api", (req, res) => {
 app.use("/api/users", usersRoutes); //Rutas de usuarios
 app.use("/api/tickets", ticketsRoutes); //Rutas de tickets
 
+app.use(error); //Ver errores en consola si los hubiera
 export default app;
