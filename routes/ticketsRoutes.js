@@ -33,7 +33,6 @@ router.get("/", buildFilter, paginate(Ticket), async (req, res) => {
     res.status(200).json(req.paginatedResults);
 })
 
-
 // Create a ticket
 // Private (only logged in users can create tickets)
 // POST api/tickets/
